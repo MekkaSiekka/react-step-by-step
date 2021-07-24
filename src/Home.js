@@ -18,11 +18,17 @@ const Home = () => {
   1. use cross component
   2. can be resued in the home.js
   */
+
+  const handleDelete = (id)=>{
+    //filter does not mutate original blogs
+    const newBlogs = blogs.filter(blog => blog.id != id);
+    setBlogs(newBlogs)
+  }
  const title = "WAP"
   return (
     <div className="home">
-    <BlogList blogs={blogs} title = {title} />
-    <BlogList blogs={blogs.filter((blog) => blog.author === 'mario')} title = 'Noob' />
+    <BlogList blogs={blogs} title = {title} handleDelete = {handleDelete} />
+    {/* <BlogList blogs={blogs.filter((blog) => blog.author === 'mario')} title = 'Noob' /> */}
     </div>
   );
 }
