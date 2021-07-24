@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import BlogList from './BlogList';
 
-/*use state to ask react to watch for Change and whenever 
- a hook is invoked, the useState's registered function will be 
- invoked
+/*
+need a json server to provide data instead of hardcoding
+npx json-server --watch .\data\db.json --port 8000
 */
 const Home = () => {
   //id is used for reacto to export data and should be unique
