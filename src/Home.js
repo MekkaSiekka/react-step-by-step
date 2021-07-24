@@ -7,11 +7,7 @@ npx json-server --watch .\data\db.json --port 8000
 */
 const Home = () => {
   //id is used for reacto to export data and should be unique
-  const [blogs, setBlogs] = useState([
-    { title: 'My new website', body: 'lorem ipsum...', author: 'mario', id: 1 },
-    { title: 'Welcome party!', body: 'lorem ipsum...', author: 'yoshi', id: 2 },
-    { title: 'Web dev top tips', body: 'lorem ipsum...', author: 'mario', id: 3 }
-  ])
+  const [blogs, setBlogs] = useState(null);
 
   const [name, setName] = useState('mario')
   /*should not hardcoding the lists, need a way to cycle through the list
@@ -21,30 +17,40 @@ const Home = () => {
   2. can be resued in the home.js
   */
 
-  const handleDelete = (id) => {
-    //filter does not mutate original blogs
-    const newBlogs = blogs.filter(blog => blog.id != id);
-    setBlogs(newBlogs)
-  }
+
 
   /*runs any time when it renders
   adding [] would not run this,  because it specifies it only runs for the first time
   now it only watch for 'name' and first refresh
   */
-  useEffect( 
-    ()=>{
+  useEffect( ()=>{
+      //all function contents callback
       console.log("useEffect running");
       console.log(blogs);
       console.log(name);
-    }  ,
-    [name]
+      fetch('http://localhost:8000/blogs')
+        .then(res => {
+          return  res.json();
+        })
+        .then(data => {
+          console.log(data);
+          setBlogs(data);
+        })
+        
+      }  ,
+    []
   )
   const title = "WAP"
-  return (
+
+  /**
+   * Dangerous here because blogs are init as null, and could be rendered as null when useEffect happends 
+   * So use conditional to show templates
+   */
+  return (  
     <div className="home">
-      <BlogList blogs={blogs} title={title} handleDelete={handleDelete} />
+      {blogs && <BlogList blogs={blogs} title={title} />}
       {/* <BlogList blogs={blogs.filter((blog) => blog.author === 'mario')} title = 'Noob' /> */}
-      <button onClick={()=>setName('Chris, new name')}>change Name</button>
+      {/* <button onClick={()=>setName('Chris, new name')}>change Name</button> */}
       <p>{name}</p>
     </div>
   );
