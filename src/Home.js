@@ -8,7 +8,7 @@ npx json-server --watch .\data\db.json --port 8000
 const Home = () => {
   //id is used for reacto to export data and should be unique
   const [blogs, setBlogs] = useState(null);
-
+  const [isPending, setIsPending] = useState(true);
   const [name, setName] = useState('mario')
   /*should not hardcoding the lists, need a way to cycle through the list
   However, this really repetivie and needs a template to make it reusable
@@ -17,27 +17,32 @@ const Home = () => {
   2. can be resued in the home.js
   */
 
+  const FetchAndUpdateData = () => {
+    fetch('http://localhost:8000/blogs')
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        console.log(data);
+        setBlogs(data);
+        setIsPending(false);
+      });
+  }
 
 
   /*runs any time when it renders
   adding [] would not run this,  because it specifies it only runs for the first time
   now it only watch for 'name' and first refresh
   */
-  useEffect( ()=>{
-      //all function contents callback
-      console.log("useEffect running");
-      console.log(blogs);
-      console.log(name);
-      fetch('http://localhost:8000/blogs')
-        .then(res => {
-          return  res.json();
-        })
-        .then(data => {
-          console.log(data);
-          setBlogs(data);
-        })
-        
-      }  ,
+  useEffect(() => {
+    //all function contents callback
+    console.log("useEffect running");
+    console.log(blogs);
+    console.log(name);
+    setTimeout(() => {
+      FetchAndUpdateData();
+    }, 1000); 
+  },
     []
   )
   const title = "WAP"
@@ -46,8 +51,9 @@ const Home = () => {
    * Dangerous here because blogs are init as null, and could be rendered as null when useEffect happends 
    * So use conditional to show templates
    */
-  return (  
+  return (
     <div className="home">
+      {isPending && <div>Loading ...</div>}
       {blogs && <BlogList blogs={blogs} title={title} />}
       {/* <BlogList blogs={blogs.filter((blog) => blog.author === 'mario')} title = 'Noob' /> */}
       {/* <button onClick={()=>setName('Chris, new name')}>change Name</button> */}
