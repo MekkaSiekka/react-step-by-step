@@ -39,11 +39,12 @@ const useFetch = (url)=>{
     useEffect(() => {
         //all function contents callback
         console.log("useEffect running");
-        console.log(data);
-        console.log(name);
+        console.log("data",data);
+        console.log("name",name);
         setTimeout(() => {
           FetchAndUpdateData(url);
         }, 1000); 
+        return () => console.log('cleanup');
       },
         [url]
       )
